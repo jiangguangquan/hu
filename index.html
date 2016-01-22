@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	 <style>
+	 body,h1,h2,h3,h4,p,dl,dd,ul,ol,form,input,textarea,th,td,select{margin: 0;padding: 0;}
+			em{font-style: normal;}
+			li{list-style: none;}
+			a{text-decoration: none;}
+			img{border: none;vertical-align: top;}
+			table{border-collapse: collapse;}
+			input,textarea{outline: none;}
+			textarea{resize:none;overflow: auto;}
+			body{font-size:14px;font-family: arial;}
+         html,body{
+         	width: 100%;
+         	height: 100%;
+         	margin: 0;
+         	padding: 0;
+         }
+         canvas{
+         	width: 100%;
+         	height: 100%;
+         	position: absolute;
+         	top: 0;
+         	left: 0;
+         }
+	 </style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<canvas id="plane"></canvas>
+<canvas id="bullet"></canvas>
+<canvas id="foe"></canvas>
+	
+</body>
+<script type="text/javascript">
+	var oBg = document.getElementById('bg');
+	var oplane = document.getElementById('plane');
+	var obullet = document.getElementById('bullet');
+	var ofoe = document.getElementById('foe');
+	var bgCxt= oBg.getContext("2d")
+	var plane= oplane.getContext("2d");
+	var bulletCxt= obullet.getContext("2d");
+    var foe= ofoe.getContext("2d");
+
+	var winw=document.documentElement.clientWidth;
+	var winh = document.documentElement.clientHeigth;
+    oplane.width = oBg.width = winw;
+    oplane.height = oBg.height =winh;
+
+	var oImgArr = [];
+
+	loading(function  () {
+			bgCxt.drawImage(oImgArr[0],0,0,oBg.width,oBg.height);
+			start ()
+	})
+
+	function start () {
+			// var y=0;
+			// var timer = setInterval(function  () {
+			// 	bgCxt.clearRect(0,0,oBg.width,oBg.height)
+			// 	y+=2;
+			// 	if (y>=oBg.height) {
+			// 		y=0;
+			// 	};
+			// 	bgCxt.drawImage(oImgArr[0],0,y-oBg.height,oBg.width,oBg.height);
+			// },30)
+        planeFn ()
+        bulletFn ()
+        bulletmove ()
+        foeFn()
+        foemove()
+	}
+
+	function planeFn () {
+		var width = oplane.width*0.20625;
+		var height = width/0.804878;
+		planeCxt.drawImage(oImgArr[1],oplane.width/width/2,oplane.height-height-20,66,width.height)
+		var t=1;
+		var x= oplane.width/width/2;
+		var y=oplane.height-height-20;
+		var disX,disY=0;
+
+		var timer = setInterval(function () {
+			oplaneCxt.clearRect(0,0,oplane.width,oplane.height)
+			t++;
+			if (t>2) {
+				t=1;
+			};
+				planeCxt.drawImage(oImgArr[t],oplane.width/width/2,oplane.height-height-20,width,height)
+		},30)
+
+		document.addEventListener("touchstart",function  (e) {
+				var disX= e.touches[0].clientX-x;
+				var disY= e.touches[0].clientY-y;
+		},false)
+		document.addEventListener("touchmove",function  (e) {
+			    x= e.touches[0].clientX-disX;
+				y= e.touches[0].clientY-disY;
+		},false)
+
+		function bulletFn () {
+			var width= oplane.width*0.01875;
+			var height = width/0.42857;
+			var x = oplane.x+oplane.w/2-width/2+1;
+			var y =oplane.y-20;
+			
+			var timer = setInterval(function  () {
+				bulletCxt.clearRect(x,y,width,height)
+				y-=4;
+				if (y<0) {
+					clearInterval(timer);
+				}else{
+					bulletCxt.drawImage(oImgArr[3],x,y,width,height);
+				}
+				
+			},30)
+
+		}
+		function bulletmove () {
+			 var timer = setInterval(function  () {
+			 	 bulletFn ()
+			 },100)
+		}
+		function  foeFn() {
+			var width = ofoe.width*0.10625;
+			var height = width/1.416667;
+			var x= Math.round(Math.random()*(ofoe.width-width));
+			var y=-height;
+			var obj = {x:s,y:y,w:width,h:height,index:0,dz:0};
+			for (var  = 0;  < ofoeArr.length; ++) {
+		       if (ofoeArr[i]=="") {
+		       	ofoeArr[i]=obj;
+		       	obj.index=i;
+		       	break;
+		       };
+			};
+			var timer = setInterval(function  () {
+				y+=4;
+			foeCxt.drawImage(oImgArr[4],x,y,width,height);
+			},30)
+		}
+		function  foemove() {
+		var timer=setInterval(function  () {
+			foeFn()
+		},1000)
+			
+		}
+
+
+	}
+  
+	
+	function loading (fn) {
+		var imgArr = ["background_2.png","hero_fly_1.png","bullet1.png","enemy1_blowup_1"];
+		index=0;
+		for (var i = 0; i < imgArr.length; i++) {
+			var img  = new Image();
+		 img.src  ="images/"+imgArr[i];
+		oImgArr.push(img);
+		img.onload=function  () {
+			index++;
+			if (index==imgArr.length) {
+				fn&&fn();
+			};
+		}
+	};
+		
+}
+</script>
+</html>
